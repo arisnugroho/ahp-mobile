@@ -680,13 +680,6 @@ html, body {
           <span class="btn-label">Masuk ke Dashboard</span>
         </button>
 
-        <div class="or-divider">atau</div>
-
-        <button class="btn-secondary" onclick="handleSSOLogin()">
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1.5" y="1.5" width="13" height="13" rx="2"/><path d="M1.5 6.5h13" stroke-linecap="round"/><path d="M5.5 1.5v5" stroke-linecap="round"/></svg>
-          Masuk dengan SSO Instansi
-        </button>
-
         <div class="form-footer">
           Belum punya akun? <a onclick="showView('view-register')">Daftar di sini</a>
         </div>
@@ -1035,22 +1028,6 @@ function handleLogin() {
     setBtnLoading('loginBtn', false);
     redirectToDashboard();
   }, 900);
-}
-
-/* ══════════════════════════════════════════
-   SSO LOGIN
-══════════════════════════════════════════ */
-function handleSSOLogin() {
-  // Simulate SSO — same redirect
-  const overlay = document.getElementById('redirectOverlay');
-  const text = document.getElementById('redirectText');
-  const bar = document.getElementById('redirectBar');
-  overlay.classList.add('show');
-  text.textContent = 'Menghubungkan ke SSO Instansi…';
-  setTimeout(() => { bar.style.width = '50%'; text.textContent = 'Memverifikasi token SSO…'; }, 400);
-  setTimeout(() => { bar.style.width = '90%'; text.textContent = 'Menyiapkan dashboard…'; }, 1100);
-  setTimeout(() => { bar.style.width = '100%'; text.textContent = 'Berhasil! Mengalihkan…'; }, 1700);
-  setTimeout(() => { window.location.href = 'dashboard.html'; }, 2200);
 }
 
 /* ══════════════════════════════════════════
