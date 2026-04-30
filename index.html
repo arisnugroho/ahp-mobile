@@ -1,0 +1,1131 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>SMBN — Login</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ══════════════════════════════════════════
+   DESIGN TOKENS — matches dashboard exactly
+══════════════════════════════════════════ */
+:root {
+  --bg: #f0f2f8;
+  --surface: #ffffff;
+  --surface2: #f4f6fb;
+  --surface3: #eaecf4;
+  --border: rgba(0,0,0,0.07);
+  --border2: rgba(0,0,0,0.12);
+  --text: #141624;
+  --text2: #4e5670;
+  --text3: #8e94ae;
+  --accent: #1b56ef;
+  --accent-hover: #1446d4;
+  --accent-light: #e8effe;
+  --accent-mid: #c0d0fa;
+  --sidebar-bg: #0c1322;
+  --green: #16a34a; --green-bg: #dcfce7;
+  --amber: #d97706; --amber-bg: #fef3c7;
+  --red: #dc2626; --red-bg: #fee2e2;
+  --radius: 10px;
+  --radius-sm: 6px;
+  --radius-lg: 14px;
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+  --shadow: 0 1px 4px rgba(0,0,0,0.07), 0 2px 8px rgba(0,0,0,0.04);
+  --shadow-md: 0 4px 24px rgba(0,0,0,0.10);
+  --shadow-lg: 0 8px 40px rgba(27,86,239,0.10);
+  --transition: 0.15s ease;
+}
+
+.dark {
+  --bg: #0a0f1c;
+  --surface: #111827;
+  --surface2: #161e30;
+  --surface3: #1c2540;
+  --border: rgba(255,255,255,0.07);
+  --border2: rgba(255,255,255,0.12);
+  --text: #e8edf8;
+  --text2: #7a85a0;
+  --text3: #4a5470;
+  --accent: #4a7cf5;
+  --accent-hover: #5a8af7;
+  --accent-light: #1a2e5a;
+  --accent-mid: #1e3870;
+  --sidebar-bg: #080d18;
+  --green: #22c55e; --green-bg: #0f3320;
+  --amber: #f59e0b; --amber-bg: #3a2000;
+  --red: #f87171; --red-bg: #3b0f0f;
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.3);
+  --shadow: 0 1px 4px rgba(0,0,0,0.3), 0 2px 8px rgba(0,0,0,0.2);
+  --shadow-md: 0 4px 24px rgba(0,0,0,0.4);
+  --shadow-lg: 0 8px 40px rgba(74,124,245,0.14);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  height: 100%;
+  font-family: 'DM Sans', system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 13px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ══════════════════════════════════════════
+   LAYOUT
+══════════════════════════════════════════ */
+.login-shell {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 1fr 460px;
+}
+
+/* ══════════════════════════════════════════
+   LEFT PANEL — visual / branding
+══════════════════════════════════════════ */
+.left-panel {
+  background: var(--sidebar-bg);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 40px 48px;
+}
+
+/* subtle grid texture */
+.left-panel::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(27,86,239,0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(27,86,239,0.06) 1px, transparent 1px);
+  background-size: 40px 40px;
+  pointer-events: none;
+}
+
+/* radial glow */
+.left-panel::after {
+  content: '';
+  position: absolute;
+  top: -120px; left: -120px;
+  width: 500px; height: 500px;
+  background: radial-gradient(circle, rgba(27,86,239,0.18) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.left-top { position: relative; z-index: 1; }
+.left-logo { display: flex; align-items: center; gap: 12px; margin-bottom: 56px; }
+.left-logo-icon {
+  width: 36px; height: 36px;
+  background: var(--accent);
+  border-radius: 9px;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 4px 16px rgba(27,86,239,0.4);
+}
+.left-logo-icon svg { width: 18px; height: 18px; fill: white; }
+.left-logo-name { color: #fff; font-size: 16px; font-weight: 700; letter-spacing: -0.02em; }
+.left-logo-sub { color: rgba(255,255,255,0.3); font-size: 10.5px; margin-top: 2px; font-family: 'DM Mono', monospace; }
+
+.left-headline {
+  color: #fff;
+  font-size: 30px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.25;
+  max-width: 380px;
+  margin-bottom: 14px;
+}
+.left-headline span { color: var(--accent); }
+
+.left-desc {
+  color: rgba(255,255,255,0.42);
+  font-size: 13.5px;
+  max-width: 360px;
+  line-height: 1.65;
+  margin-bottom: 36px;
+}
+
+/* mini stats strip */
+.left-stats {
+  display: flex;
+  gap: 24px;
+  margin-bottom: 0;
+}
+.left-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.left-stat-num {
+  color: #fff;
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  font-family: 'DM Mono', monospace;
+}
+.left-stat-label {
+  color: rgba(255,255,255,0.35);
+  font-size: 10.5px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.left-stat-div {
+  width: 1px;
+  background: rgba(255,255,255,0.08);
+  align-self: stretch;
+  margin: 4px 0;
+}
+
+/* animated SVG chart preview */
+.left-chart-preview {
+  position: relative; z-index: 1;
+  margin: 36px 0 0;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 12px;
+  padding: 16px;
+}
+.left-chart-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+.left-chart-title { color: rgba(255,255,255,0.7); font-size: 12px; font-weight: 500; }
+.left-chart-badge {
+  display: flex; align-items: center; gap: 5px;
+  background: rgba(22,163,74,0.18);
+  color: #4ade80;
+  font-size: 10.5px; font-weight: 600;
+  padding: 3px 9px; border-radius: 20px;
+}
+.live-dot-sm {
+  width: 5px; height: 5px; background: #4ade80;
+  border-radius: 50%; animation: pulse 2s infinite;
+}
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+
+.left-chart-svg-line {
+  stroke-dasharray: 800;
+  stroke-dashoffset: 800;
+  animation: drawLine 2.4s cubic-bezier(.4,0,.2,1) forwards 0.5s;
+}
+@keyframes drawLine { to { stroke-dashoffset: 0; } }
+
+/* bottom of left panel */
+.left-bottom { position: relative; z-index: 1; }
+.left-footer-text {
+  color: rgba(255,255,255,0.2);
+  font-size: 11px;
+  font-family: 'DM Mono', monospace;
+}
+
+/* ══════════════════════════════════════════
+   RIGHT PANEL — auth forms
+══════════════════════════════════════════ */
+.right-panel {
+  background: var(--surface);
+  border-left: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+.right-topbar {
+  padding: 18px 36px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.right-topbar-label { font-size: 12px; color: var(--text3); }
+.theme-btn {
+  width: 30px; height: 30px; border-radius: 7px;
+  border: 1px solid var(--border); background: var(--surface2);
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  font-size: 14px; transition: background var(--transition);
+}
+.theme-btn:hover { background: var(--surface3); }
+
+.right-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 40px 48px;
+}
+
+/* ══════════════════════════════════════════
+   FORM VIEWS (login / forgot / register)
+══════════════════════════════════════════ */
+.form-view { display: none; animation: fadeSlideUp 0.28s ease; }
+.form-view.active { display: block; }
+@keyframes fadeSlideUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.form-heading { margin-bottom: 6px; font-size: 22px; font-weight: 700; letter-spacing: -0.03em; }
+.form-sub { color: var(--text3); font-size: 13px; margin-bottom: 28px; line-height: 1.55; }
+.form-sub strong { color: var(--text2); }
+
+/* Input */
+.field { margin-bottom: 16px; }
+.field-label {
+  display: block; font-size: 12px; font-weight: 500;
+  color: var(--text2); margin-bottom: 6px; letter-spacing: 0.01em;
+}
+.field-wrap { position: relative; }
+.field-input {
+  width: 100%; padding: 10px 14px;
+  border: 1px solid var(--border2);
+  border-radius: var(--radius-sm);
+  background: var(--surface2);
+  color: var(--text);
+  font-size: 13px; font-family: inherit;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  outline: none;
+}
+.field-input::placeholder { color: var(--text3); }
+.field-input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(27,86,239,0.10);
+  background: var(--surface);
+}
+.field-input.error {
+  border-color: var(--red);
+  box-shadow: 0 0 0 3px rgba(220,38,38,0.08);
+}
+.field-input-icon {
+  position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
+  color: var(--text3); cursor: pointer; font-size: 15px;
+  user-select: none; line-height: 1;
+  transition: color var(--transition);
+}
+.field-input-icon:hover { color: var(--text2); }
+.field-input.has-icon { padding-right: 40px; }
+.field-error {
+  font-size: 11.5px; color: var(--red);
+  margin-top: 5px; display: none;
+}
+.field-error.show { display: block; }
+
+/* Row helper */
+.field-row {
+  display: flex; align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+.field-row .field-label { margin-bottom: 0; }
+.link-sm {
+  font-size: 12px; color: var(--accent); cursor: pointer;
+  text-decoration: none; font-weight: 500;
+  transition: color var(--transition);
+}
+.link-sm:hover { color: var(--accent-hover); text-decoration: underline; }
+
+/* Checkbox */
+.checkbox-row {
+  display: flex; align-items: center; gap: 9px;
+  margin-bottom: 22px;
+}
+.checkbox-row input[type="checkbox"] {
+  width: 15px; height: 15px; accent-color: var(--accent);
+  flex-shrink: 0; cursor: pointer; border-radius: 3px;
+}
+.checkbox-row label { font-size: 12.5px; color: var(--text2); cursor: pointer; }
+
+/* Buttons */
+.btn-primary {
+  width: 100%; padding: 11px 16px;
+  background: var(--accent); color: #fff;
+  border: none; border-radius: var(--radius-sm);
+  font-size: 13.5px; font-family: inherit; font-weight: 600;
+  cursor: pointer; letter-spacing: -0.01em;
+  transition: background var(--transition), transform 0.1s, box-shadow 0.2s;
+  box-shadow: 0 2px 12px rgba(27,86,239,0.25);
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  position: relative; overflow: hidden;
+}
+.btn-primary:hover { background: var(--accent-hover); box-shadow: 0 4px 18px rgba(27,86,239,0.35); }
+.btn-primary:active { transform: scale(0.99); }
+.btn-primary:disabled { opacity: 0.6; cursor: not-allowed; }
+
+/* Loading spinner inside btn */
+.btn-spinner {
+  display: none; width: 15px; height: 15px;
+  border: 2px solid rgba(255,255,255,0.35);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+.btn-primary.loading .btn-spinner { display: block; }
+.btn-primary.loading .btn-label { opacity: 0; position: absolute; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.btn-secondary {
+  width: 100%; padding: 10px 16px;
+  background: var(--surface2); color: var(--text2);
+  border: 1px solid var(--border2); border-radius: var(--radius-sm);
+  font-size: 13px; font-family: inherit; font-weight: 500;
+  cursor: pointer;
+  transition: background var(--transition), border-color var(--transition);
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+}
+.btn-secondary:hover { background: var(--surface3); border-color: var(--border2); color: var(--text); }
+
+/* Divider */
+.or-divider {
+  display: flex; align-items: center; gap: 12px;
+  margin: 20px 0;
+  color: var(--text3); font-size: 11.5px;
+}
+.or-divider::before, .or-divider::after {
+  content: ''; flex: 1; height: 1px; background: var(--border2);
+}
+
+/* Alert banners inside form */
+.form-alert {
+  display: none;
+  padding: 10px 14px; border-radius: var(--radius-sm);
+  font-size: 12.5px; margin-bottom: 16px;
+  align-items: center; gap: 9px;
+  line-height: 1.5;
+}
+.form-alert.show { display: flex; }
+.form-alert.success { background: var(--green-bg); color: var(--green); border: 1px solid rgba(22,163,74,0.2); }
+.form-alert.error { background: var(--red-bg); color: var(--red); border: 1px solid rgba(220,38,38,0.15); }
+.form-alert.info { background: var(--accent-light); color: var(--accent); border: 1px solid rgba(27,86,239,0.15); }
+
+/* Strength meter */
+.strength-bar { display: flex; gap: 4px; margin-top: 7px; }
+.strength-seg {
+  flex: 1; height: 3px; border-radius: 3px;
+  background: var(--surface3);
+  transition: background 0.3s;
+}
+.strength-label { font-size: 11px; color: var(--text3); margin-top: 5px; }
+
+/* Footer below form */
+.form-footer {
+  text-align: center;
+  font-size: 12.5px;
+  color: var(--text3);
+  margin-top: 24px;
+}
+.form-footer a { color: var(--accent); font-weight: 500; cursor: pointer; text-decoration: none; }
+.form-footer a:hover { text-decoration: underline; }
+
+/* ══════════════════════════════════════════
+   SYSTEM INFO BAR
+══════════════════════════════════════════ */
+.system-bar {
+  padding: 14px 48px;
+  border-top: 1px solid var(--border);
+  display: flex; align-items: center; gap: 16px;
+  flex-wrap: wrap;
+  flex-shrink: 0;
+}
+.sys-item {
+  display: flex; align-items: center; gap: 5px;
+  font-size: 11px; color: var(--text3);
+}
+.sys-dot { width: 6px; height: 6px; border-radius: 50%; }
+.sys-item span.val { color: var(--text2); font-family: 'DM Mono', monospace; font-size: 10.5px; }
+
+/* ══════════════════════════════════════════
+   PASSWORD STRENGTH
+══════════════════════════════════════════ */
+#registerPwWrap .strength-bar .seg-0,
+#registerPwWrap .strength-bar .seg-1 { background: var(--red); }
+#registerPwWrap .strength-bar.medium .seg-0,
+#registerPwWrap .strength-bar.medium .seg-1,
+#registerPwWrap .strength-bar.medium .seg-2 { background: var(--amber); }
+#registerPwWrap .strength-bar.strong .seg-0,
+#registerPwWrap .strength-bar.strong .seg-1,
+#registerPwWrap .strength-bar.strong .seg-2,
+#registerPwWrap .strength-bar.strong .seg-3 { background: var(--green); }
+
+/* ══════════════════════════════════════════
+   LOADING OVERLAY (login redirect)
+══════════════════════════════════════════ */
+.redirect-overlay {
+  position: fixed; inset: 0;
+  background: var(--sidebar-bg);
+  z-index: 9999;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 20px;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.4s ease;
+}
+.redirect-overlay.show { opacity: 1; pointer-events: all; }
+.redirect-spinner {
+  width: 44px; height: 44px;
+  border: 3px solid rgba(27,86,239,0.2);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+.redirect-text { color: rgba(255,255,255,0.6); font-size: 13px; letter-spacing: 0.02em; }
+.redirect-logo { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+.redirect-logo-icon {
+  width: 36px; height: 36px; background: var(--accent);
+  border-radius: 9px; display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 4px 16px rgba(27,86,239,0.4);
+}
+.redirect-logo-icon svg { width: 18px; height: 18px; fill: white; }
+.redirect-logo-name { color: #fff; font-size: 18px; font-weight: 700; letter-spacing: -0.02em; }
+.redirect-progress {
+  width: 200px; height: 2px; background: rgba(255,255,255,0.08);
+  border-radius: 2px; overflow: hidden;
+}
+.redirect-progress-bar {
+  height: 100%; width: 0; background: var(--accent);
+  border-radius: 2px;
+  transition: width 1.2s cubic-bezier(.4,0,.2,1);
+}
+
+/* ══════════════════════════════════════════
+   RESPONSIVE
+══════════════════════════════════════════ */
+@media (max-width: 860px) {
+  .login-shell { grid-template-columns: 1fr; }
+  .left-panel { display: none; }
+  .right-panel { border-left: none; }
+  .right-body { padding: 32px 28px; }
+  .system-bar { padding: 14px 28px; }
+  .right-topbar { padding: 14px 28px; }
+}
+
+@media (max-width: 400px) {
+  .right-body { padding: 24px 18px; }
+  .system-bar { padding: 12px 18px; gap: 10px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ════════════ REDIRECT OVERLAY ════════════ -->
+<div class="redirect-overlay" id="redirectOverlay">
+  <div class="redirect-logo">
+    <div class="redirect-logo-icon">
+      <svg viewBox="0 0 16 16"><path d="M8 1L2 6v9h4v-5h4v5h4V6L8 1z"/></svg>
+    </div>
+    <div class="redirect-logo-name">SMBN</div>
+  </div>
+  <div class="redirect-spinner"></div>
+  <div class="redirect-text" id="redirectText">Memverifikasi kredensial…</div>
+  <div class="redirect-progress"><div class="redirect-progress-bar" id="redirectBar"></div></div>
+</div>
+
+<div class="login-shell" id="app">
+
+  <!-- ════════════ LEFT PANEL ════════════ -->
+  <div class="left-panel">
+    <div class="left-top">
+      <div class="left-logo">
+        <div class="left-logo-icon">
+          <svg viewBox="0 0 16 16"><path d="M8 1L2 6v9h4v-5h4v5h4V6L8 1z"/></svg>
+        </div>
+        <div>
+          <div class="left-logo-name">SMBN</div>
+          <div class="left-logo-sub">Sistem Monitoring Bendungan Nasional</div>
+        </div>
+      </div>
+
+      <div class="left-headline">
+        Pantau <span>seluruh bendungan</span> dari satu platform terpadu
+      </div>
+      <div class="left-desc">
+        Monitoring real-time tinggi muka air, debit rembesan, curah hujan, dan instrumen geoteknik untuk 5 bendungan di NTB — terintegrasi, aman, dan dapat diandalkan.
+      </div>
+
+      <div class="left-stats">
+        <div class="left-stat">
+          <div class="left-stat-num">5</div>
+          <div class="left-stat-label">Bendungan</div>
+        </div>
+        <div class="left-stat-div"></div>
+        <div class="left-stat">
+          <div class="left-stat-num">142</div>
+          <div class="left-stat-label">Sensor Aktif</div>
+        </div>
+        <div class="left-stat-div"></div>
+        <div class="left-stat">
+          <div class="left-stat-num">99.4%</div>
+          <div class="left-stat-label">Uptime</div>
+        </div>
+        <div class="left-stat-div"></div>
+        <div class="left-stat">
+          <div class="left-stat-num">15s</div>
+          <div class="left-stat-label">Refresh</div>
+        </div>
+      </div>
+
+      <!-- Mini chart preview -->
+      <div class="left-chart-preview">
+        <div class="left-chart-header">
+          <div class="left-chart-title">TMA Bringin Sila — Live</div>
+          <div class="left-chart-badge">
+            <div class="live-dot-sm"></div>
+            116.08 mdpl
+          </div>
+        </div>
+        <svg viewBox="0 0 340 70" style="width:100%;display:block">
+          <defs>
+            <linearGradient id="lgLeft" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#1b56ef" stop-opacity="0.18"/>
+              <stop offset="100%" stop-color="#1b56ef" stop-opacity="0"/>
+            </linearGradient>
+          </defs>
+          <!-- grid -->
+          <line x1="0" y1="15" x2="340" y2="15" stroke="rgba(255,255,255,0.06)" stroke-width="0.8"/>
+          <line x1="0" y1="35" x2="340" y2="35" stroke="rgba(255,255,255,0.06)" stroke-width="0.8"/>
+          <line x1="0" y1="55" x2="340" y2="55" stroke="rgba(255,255,255,0.06)" stroke-width="0.8"/>
+          <!-- HWL -->
+          <line x1="0" y1="22" x2="340" y2="22" stroke="#ef4444" stroke-width="0.8" stroke-dasharray="4,3" opacity="0.5"/>
+          <text x="330" y="20" font-size="7" fill="#ef4444" text-anchor="end" font-family="DM Mono,monospace" opacity="0.6">HWL</text>
+          <!-- Area -->
+          <path d="M0,52 C30,49 60,44 100,40 C140,36 175,33 210,30 C245,27 280,26 340,24 L340,65 L0,65 Z" fill="url(#lgLeft)"/>
+          <!-- Line animated -->
+          <path class="left-chart-svg-line" d="M0,52 C30,49 60,44 100,40 C140,36 175,33 210,30 C245,27 280,26 340,24" fill="none" stroke="#4a7cf5" stroke-width="2" stroke-linecap="round"/>
+          <!-- Dot -->
+          <circle cx="340" cy="24" r="4" fill="#4a7cf5" opacity="0"/>
+          <circle cx="340" cy="24" r="4" fill="#4a7cf5" style="animation: dotAppear 0.3s ease 2.9s forwards; opacity:0"/>
+          <circle cx="340" cy="24" r="8" fill="#4a7cf5" opacity="0" style="animation: dotGlow 0.3s ease 2.9s forwards;"/>
+          <!-- Y labels -->
+          <text x="0" y="19" font-size="7" fill="rgba(255,255,255,0.25)" font-family="DM Mono,monospace">117.5</text>
+          <text x="0" y="39" font-size="7" fill="rgba(255,255,255,0.25)" font-family="DM Mono,monospace">116.1</text>
+        </svg>
+        <style>
+          @keyframes dotAppear { to { opacity: 1; } }
+          @keyframes dotGlow { to { opacity: 0.14; } }
+        </style>
+        <!-- Mini sensor status row -->
+        <div style="display:flex;gap:16px;margin-top:12px;padding-top:10px;border-top:1px solid rgba(255,255,255,0.06)">
+          <div style="font-size:10px;color:rgba(255,255,255,0.35);display:flex;align-items:center;gap:5px"><span style="width:5px;height:5px;border-radius:50%;background:#4ade80;display:inline-block"></span>AWLR Online</div>
+          <div style="font-size:10px;color:rgba(255,255,255,0.35);display:flex;align-items:center;gap:5px"><span style="width:5px;height:5px;border-radius:50%;background:#4ade80;display:inline-block"></span>V-Notch Online</div>
+          <div style="font-size:10px;color:rgba(255,255,255,0.35);display:flex;align-items:center;gap:5px"><span style="width:5px;height:5px;border-radius:50%;background:#f59e0b;display:inline-block"></span>Weather Offline</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="left-bottom">
+      <div class="left-footer-text">© 2026 Kementerian PUPR · v4.6.1-stable</div>
+    </div>
+  </div>
+
+  <!-- ════════════ RIGHT PANEL ════════════ -->
+  <div class="right-panel">
+
+    <!-- Top bar -->
+    <div class="right-topbar">
+      <span class="right-topbar-label">Butuh bantuan?</span>
+      <a href="#" class="link-sm" style="font-size:12px">Hubungi Admin →</a>
+      <div class="theme-btn" onclick="toggleTheme()" title="Toggle tampilan gelap/terang">◑</div>
+    </div>
+
+    <!-- Form area -->
+    <div class="right-body">
+
+      <!-- ── VIEW: LOGIN ── -->
+      <div class="form-view active" id="view-login">
+        <div class="form-heading">Selamat datang kembali</div>
+        <div class="form-sub">Masuk ke <strong>SMBN</strong> menggunakan akun yang telah terdaftar</div>
+
+        <div class="form-alert info show" id="loginDemoAlert" style="margin-bottom:16px">
+          <span>ℹ️</span>
+          <span>Demo: gunakan email & password apapun, lalu klik Masuk untuk melihat dashboard.</span>
+        </div>
+        <div class="form-alert error" id="loginError">
+          <span>⚠️</span>
+          <span id="loginErrorMsg">Email atau password salah. Silakan coba lagi.</span>
+        </div>
+
+        <div class="field">
+          <label class="field-label" for="loginEmail">Alamat Email</label>
+          <div class="field-wrap">
+            <input class="field-input" type="email" id="loginEmail" placeholder="nama@instansi.go.id" autocomplete="email"/>
+          </div>
+          <div class="field-error" id="loginEmailErr">Email tidak valid.</div>
+        </div>
+
+        <div class="field">
+          <div class="field-row">
+            <label class="field-label" for="loginPw">Kata Sandi</label>
+            <a class="link-sm" onclick="showView('view-forgot')">Lupa kata sandi?</a>
+          </div>
+          <div class="field-wrap">
+            <input class="field-input has-icon" type="password" id="loginPw" placeholder="Masukkan kata sandi" autocomplete="current-password"/>
+            <span class="field-input-icon" id="toggleLoginPw" onclick="togglePw('loginPw','toggleLoginPw')">👁</span>
+          </div>
+          <div class="field-error" id="loginPwErr">Kata sandi tidak boleh kosong.</div>
+        </div>
+
+        <div class="checkbox-row">
+          <input type="checkbox" id="rememberMe" checked/>
+          <label for="rememberMe">Ingat saya selama 30 hari</label>
+        </div>
+
+        <button class="btn-primary" id="loginBtn" onclick="handleLogin()">
+          <div class="btn-spinner"></div>
+          <span class="btn-label">Masuk ke Dashboard</span>
+        </button>
+
+        <div class="or-divider">atau</div>
+
+        <button class="btn-secondary" onclick="handleSSOLogin()">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1.5" y="1.5" width="13" height="13" rx="2"/><path d="M1.5 6.5h13" stroke-linecap="round"/><path d="M5.5 1.5v5" stroke-linecap="round"/></svg>
+          Masuk dengan SSO Instansi
+        </button>
+
+        <div class="form-footer">
+          Belum punya akun? <a onclick="showView('view-register')">Daftar di sini</a>
+        </div>
+      </div>
+
+      <!-- ── VIEW: FORGOT PASSWORD ── -->
+      <div class="form-view" id="view-forgot">
+        <button onclick="showView('view-login')" style="display:flex;align-items:center;gap:6px;background:none;border:none;cursor:pointer;color:var(--text3);font-size:12px;margin-bottom:22px;padding:0;font-family:inherit">
+          ← Kembali ke login
+        </button>
+        <div class="form-heading">Reset kata sandi</div>
+        <div class="form-sub">Masukkan email terdaftar Anda. Kami akan mengirimkan tautan untuk membuat kata sandi baru.</div>
+
+        <div class="form-alert success" id="forgotSuccess">
+          <span>✅</span>
+          <span>Tautan reset kata sandi telah dikirim ke email Anda. Periksa kotak masuk atau folder spam.</span>
+        </div>
+        <div class="form-alert error" id="forgotError">
+          <span>⚠️</span>
+          <span>Email tidak ditemukan dalam sistem. Hubungi admin jika Anda yakin sudah terdaftar.</span>
+        </div>
+
+        <div class="field">
+          <label class="field-label" for="forgotEmail">Alamat Email Terdaftar</label>
+          <div class="field-wrap">
+            <input class="field-input" type="email" id="forgotEmail" placeholder="nama@instansi.go.id"/>
+          </div>
+          <div class="field-error" id="forgotEmailErr">Masukkan email yang valid.</div>
+        </div>
+
+        <div style="background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:12px 14px;margin-bottom:20px;font-size:12px;color:var(--text2);line-height:1.55">
+          🔒 Tautan reset berlaku selama <strong>15 menit</strong> dan hanya dapat digunakan sekali. Jika Anda tidak menerima email, periksa folder spam atau hubungi administrator sistem.
+        </div>
+
+        <button class="btn-primary" id="forgotBtn" onclick="handleForgot()">
+          <div class="btn-spinner"></div>
+          <span class="btn-label">Kirim Tautan Reset</span>
+        </button>
+
+        <div class="form-footer" style="margin-top:18px">
+          Ingat kata sandi Anda? <a onclick="showView('view-login')">Kembali masuk</a>
+        </div>
+      </div>
+
+      <!-- ── VIEW: REGISTER ── -->
+      <div class="form-view" id="view-register">
+        <button onclick="showView('view-login')" style="display:flex;align-items:center;gap:6px;background:none;border:none;cursor:pointer;color:var(--text3);font-size:12px;margin-bottom:22px;padding:0;font-family:inherit">
+          ← Kembali ke login
+        </button>
+        <div class="form-heading">Buat akun baru</div>
+        <div class="form-sub">Akun baru memerlukan verifikasi admin sebelum dapat mengakses dashboard SMBN.</div>
+
+        <div class="form-alert info show" id="registerInfo">
+          <span>ℹ️</span>
+          <span>Pendaftaran akun terbatas untuk petugas Kementerian PUPR dan dinas terkait. Gunakan email instansi resmi.</span>
+        </div>
+        <div class="form-alert success" id="registerSuccess">
+          <span>✅</span>
+          <span>Pendaftaran berhasil. Akun Anda sedang dalam proses verifikasi oleh administrator. Anda akan mendapat notifikasi via email.</span>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+          <div class="field">
+            <label class="field-label" for="regFirstName">Nama Depan</label>
+            <input class="field-input" type="text" id="regFirstName" placeholder="Aris"/>
+            <div class="field-error" id="regFirstNameErr">Wajib diisi.</div>
+          </div>
+          <div class="field">
+            <label class="field-label" for="regLastName">Nama Belakang</label>
+            <input class="field-input" type="text" id="regLastName" placeholder="Nugroho"/>
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="field-label" for="regEmail">Email Instansi</label>
+          <input class="field-input" type="email" id="regEmail" placeholder="nama@instansi.go.id"/>
+          <div class="field-error" id="regEmailErr">Gunakan email instansi resmi (.go.id atau .co.id).</div>
+        </div>
+
+        <div class="field">
+          <label class="field-label" for="regUnit">Unit / Instansi</label>
+          <select class="field-input" id="regUnit" style="cursor:pointer">
+            <option value="">— Pilih instansi —</option>
+            <option>Kementerian PUPR — Ditjen SDA</option>
+            <option>BBWS Nusa Tenggara I</option>
+            <option>BBWS Nusa Tenggara II</option>
+            <option>Dinas PUPR NTB</option>
+            <option>Konsultan Pengawas (Mitra)</option>
+            <option>Lainnya</option>
+          </select>
+          <div class="field-error" id="regUnitErr">Pilih instansi Anda.</div>
+        </div>
+
+        <div class="field">
+          <label class="field-label" for="regPw">Kata Sandi</label>
+          <div class="field-wrap" id="registerPwWrap">
+            <input class="field-input has-icon" type="password" id="regPw" placeholder="Min. 8 karakter" oninput="checkStrength(this.value)"/>
+            <span class="field-input-icon" onclick="togglePw('regPw', this)">👁</span>
+          </div>
+          <div class="strength-bar" id="strengthBar">
+            <div class="strength-seg seg-0"></div>
+            <div class="strength-seg seg-1"></div>
+            <div class="strength-seg seg-2"></div>
+            <div class="strength-seg seg-3"></div>
+          </div>
+          <div class="strength-label" id="strengthLabel">Masukkan kata sandi</div>
+          <div class="field-error" id="regPwErr">Min. 8 karakter, 1 huruf besar, 1 angka.</div>
+        </div>
+
+        <div class="field">
+          <label class="field-label" for="regPwConfirm">Konfirmasi Kata Sandi</label>
+          <div class="field-wrap">
+            <input class="field-input has-icon" type="password" id="regPwConfirm" placeholder="Ulangi kata sandi"/>
+            <span class="field-input-icon" onclick="togglePw('regPwConfirm', this)">👁</span>
+          </div>
+          <div class="field-error" id="regPwConfirmErr">Kata sandi tidak cocok.</div>
+        </div>
+
+        <div class="checkbox-row" style="margin-bottom:16px">
+          <input type="checkbox" id="agreeTerms"/>
+          <label for="agreeTerms">Saya menyetujui <a href="#" class="link-sm" style="font-size:12.5px">Syarat & Ketentuan</a> penggunaan sistem SMBN</label>
+        </div>
+        <div class="field-error" id="regTermsErr" style="margin-bottom:12px">Anda harus menyetujui syarat & ketentuan.</div>
+
+        <button class="btn-primary" id="registerBtn" onclick="handleRegister()">
+          <div class="btn-spinner"></div>
+          <span class="btn-label">Daftar & Ajukan Verifikasi</span>
+        </button>
+
+        <div class="form-footer">
+          Sudah punya akun? <a onclick="showView('view-login')">Masuk sekarang</a>
+        </div>
+      </div>
+
+    </div><!-- /right-body -->
+
+    <!-- System status bar -->
+    <div class="system-bar">
+      <div class="sys-item">
+        <div class="sys-dot" style="background:var(--green)"></div>
+        Sistem
+        <span class="val">Online</span>
+      </div>
+      <div class="sys-item">·</div>
+      <div class="sys-item">
+        API
+        <span class="val" id="apiPing">— ms</span>
+      </div>
+      <div class="sys-item">·</div>
+      <div class="sys-item">
+        Sensor aktif
+        <span class="val">142 / 156</span>
+      </div>
+      <div class="sys-item">·</div>
+      <div class="sys-item">
+        Alert
+        <span class="val" style="color:var(--red)">34 aktif</span>
+      </div>
+      <div class="sys-item" style="margin-left:auto">
+        <span class="val" id="clockBar">--:--:--</span>
+        <span style="color:var(--text3);margin-left:3px">WITA</span>
+      </div>
+    </div>
+
+  </div><!-- /right-panel -->
+</div><!-- /login-shell -->
+
+<script>
+/* ══════════════════════════════════════════
+   VIEW SWITCHING
+══════════════════════════════════════════ */
+function showView(id) {
+  document.querySelectorAll('.form-view').forEach(v => v.classList.remove('active'));
+  const el = document.getElementById(id);
+  if (el) el.classList.add('active');
+}
+
+/* ══════════════════════════════════════════
+   THEME TOGGLE
+══════════════════════════════════════════ */
+function toggleTheme() {
+  document.getElementById('app').classList.toggle('dark');
+  localStorage.setItem('smbn-theme', document.getElementById('app').classList.contains('dark') ? 'dark' : 'light');
+}
+if (localStorage.getItem('smbn-theme') === 'dark') {
+  document.getElementById('app').classList.add('dark');
+}
+
+/* ══════════════════════════════════════════
+   CLOCK
+══════════════════════════════════════════ */
+function updateClock() {
+  const now = new Date();
+  // WITA = UTC+8
+  const wita = new Date(now.getTime() + (8 * 60 * 60 * 1000));
+  const pad = n => String(n).padStart(2, '0');
+  const str = `${pad(wita.getUTCHours())}:${pad(wita.getUTCMinutes())}:${pad(wita.getUTCSeconds())}`;
+  const el = document.getElementById('clockBar');
+  if (el) el.textContent = str;
+}
+updateClock(); setInterval(updateClock, 1000);
+
+/* ══════════════════════════════════════════
+   SIMULATED API PING
+══════════════════════════════════════════ */
+function simulatePing() {
+  const ping = Math.floor(Math.random() * 30) + 12;
+  const el = document.getElementById('apiPing');
+  if (el) el.textContent = ping + ' ms';
+}
+simulatePing(); setInterval(simulatePing, 4000);
+
+/* ══════════════════════════════════════════
+   PASSWORD VISIBILITY TOGGLE
+══════════════════════════════════════════ */
+function togglePw(inputId, iconEl) {
+  const input = document.getElementById(inputId) || document.querySelector('#' + inputId);
+  if (!input) return;
+  const isText = input.type === 'text';
+  input.type = isText ? 'password' : 'text';
+  if (typeof iconEl === 'string') {
+    const el = document.getElementById(iconEl);
+    if (el) el.textContent = isText ? '👁' : '🙈';
+  } else if (iconEl && iconEl.textContent !== undefined) {
+    iconEl.textContent = isText ? '👁' : '🙈';
+  }
+}
+
+/* ══════════════════════════════════════════
+   PASSWORD STRENGTH
+══════════════════════════════════════════ */
+function checkStrength(val) {
+  const bar = document.getElementById('strengthBar');
+  const label = document.getElementById('strengthLabel');
+  if (!bar) return;
+  const segs = bar.querySelectorAll('.strength-seg');
+
+  let score = 0;
+  if (val.length >= 8) score++;
+  if (/[A-Z]/.test(val)) score++;
+  if (/[0-9]/.test(val)) score++;
+  if (/[^A-Za-z0-9]/.test(val)) score++;
+
+  // reset classes
+  bar.classList.remove('medium','strong');
+  segs.forEach(s => s.style.background = '');
+
+  const colors = { 1: 'var(--red)', 2: 'var(--amber)', 3: 'var(--amber)', 4: 'var(--green)' };
+  const labels = { 0: 'Masukkan kata sandi', 1: 'Terlalu lemah', 2: 'Cukup kuat', 3: 'Kuat', 4: 'Sangat kuat' };
+
+  if (val.length === 0) { label.textContent = 'Masukkan kata sandi'; label.style.color = ''; return; }
+  for (let i = 0; i < score; i++) segs[i].style.background = colors[score] || 'var(--red)';
+  label.textContent = labels[score];
+  label.style.color = colors[score] || '';
+}
+
+/* ══════════════════════════════════════════
+   FIELD VALIDATION HELPERS
+══════════════════════════════════════════ */
+function showErr(id, msg) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.textContent = msg || el.textContent;
+  el.classList.add('show');
+}
+function clearErr(id) {
+  const el = document.getElementById(id);
+  if (el) el.classList.remove('show');
+}
+function setInputErr(inputId) {
+  const el = document.getElementById(inputId);
+  if (el) el.classList.add('error');
+}
+function clearInputErr(inputId) {
+  const el = document.getElementById(inputId);
+  if (el) el.classList.remove('error');
+}
+
+/* ══════════════════════════════════════════
+   LOADING STATE
+══════════════════════════════════════════ */
+function setBtnLoading(btnId, loading) {
+  const btn = document.getElementById(btnId);
+  if (!btn) return;
+  if (loading) btn.classList.add('loading');
+  else btn.classList.remove('loading');
+  btn.disabled = loading;
+}
+
+/* ══════════════════════════════════════════
+   REDIRECT TO DASHBOARD
+══════════════════════════════════════════ */
+function redirectToDashboard() {
+  const overlay = document.getElementById('redirectOverlay');
+  const bar = document.getElementById('redirectBar');
+  const text = document.getElementById('redirectText');
+
+  overlay.classList.add('show');
+
+  const steps = [
+    { w: '30%', t: 'Memverifikasi kredensial…', delay: 300 },
+    { w: '60%', t: 'Memuat konfigurasi sistem…', delay: 900 },
+    { w: '85%', t: 'Menyiapkan dashboard…', delay: 1600 },
+    { w: '100%', t: 'Selamat datang, Aris Nugroho!', delay: 2100 },
+  ];
+
+  steps.forEach(s => {
+    setTimeout(() => {
+      bar.style.width = s.w;
+      text.textContent = s.t;
+    }, s.delay);
+  });
+
+  setTimeout(() => {
+    // Redirect to dashboard (same directory) — demo opens in same tab
+    window.location.href = 'dashboard.html';
+  }, 2700);
+}
+
+/* ══════════════════════════════════════════
+   LOGIN HANDLER
+══════════════════════════════════════════ */
+function handleLogin() {
+  const email = document.getElementById('loginEmail').value.trim();
+  const pw = document.getElementById('loginPw').value;
+  let valid = true;
+
+  clearErr('loginEmailErr'); clearInputErr('loginEmail');
+  clearErr('loginPwErr');    clearInputErr('loginPw');
+  document.getElementById('loginError').classList.remove('show');
+
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    showErr('loginEmailErr', 'Masukkan alamat email yang valid.');
+    setInputErr('loginEmail'); valid = false;
+  }
+  if (!pw) {
+    showErr('loginPwErr', 'Kata sandi tidak boleh kosong.');
+    setInputErr('loginPw'); valid = false;
+  }
+  if (!valid) return;
+
+  setBtnLoading('loginBtn', true);
+
+  // Simulate auth check
+  setTimeout(() => {
+    setBtnLoading('loginBtn', false);
+    redirectToDashboard();
+  }, 900);
+}
+
+/* ══════════════════════════════════════════
+   SSO LOGIN
+══════════════════════════════════════════ */
+function handleSSOLogin() {
+  // Simulate SSO — same redirect
+  const overlay = document.getElementById('redirectOverlay');
+  const text = document.getElementById('redirectText');
+  const bar = document.getElementById('redirectBar');
+  overlay.classList.add('show');
+  text.textContent = 'Menghubungkan ke SSO Instansi…';
+  setTimeout(() => { bar.style.width = '50%'; text.textContent = 'Memverifikasi token SSO…'; }, 400);
+  setTimeout(() => { bar.style.width = '90%'; text.textContent = 'Menyiapkan dashboard…'; }, 1100);
+  setTimeout(() => { bar.style.width = '100%'; text.textContent = 'Berhasil! Mengalihkan…'; }, 1700);
+  setTimeout(() => { window.location.href = 'dashboard.html'; }, 2200);
+}
+
+/* ══════════════════════════════════════════
+   FORGOT PASSWORD HANDLER
+══════════════════════════════════════════ */
+function handleForgot() {
+  const email = document.getElementById('forgotEmail').value.trim();
+  clearErr('forgotEmailErr'); clearInputErr('forgotEmail');
+  document.getElementById('forgotSuccess').classList.remove('show');
+  document.getElementById('forgotError').classList.remove('show');
+
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    showErr('forgotEmailErr', 'Masukkan alamat email yang valid.');
+    setInputErr('forgotEmail'); return;
+  }
+
+  setBtnLoading('forgotBtn', true);
+  setTimeout(() => {
+    setBtnLoading('forgotBtn', false);
+    document.getElementById('forgotSuccess').classList.add('show');
+    document.getElementById('forgotEmail').value = '';
+  }, 1200);
+}
+
+/* ══════════════════════════════════════════
+   REGISTER HANDLER
+══════════════════════════════════════════ */
+function handleRegister() {
+  const firstName = document.getElementById('regFirstName').value.trim();
+  const email     = document.getElementById('regEmail').value.trim();
+  const unit      = document.getElementById('regUnit').value;
+  const pw        = document.getElementById('regPw').value;
+  const pwConfirm = document.getElementById('regPwConfirm').value;
+  const terms     = document.getElementById('agreeTerms').checked;
+  let valid = true;
+
+  ['regFirstNameErr','regEmailErr','regUnitErr','regPwErr','regPwConfirmErr','regTermsErr']
+    .forEach(id => clearErr(id));
+  ['regFirstName','regEmail','regUnit','regPw','regPwConfirm']
+    .forEach(id => clearInputErr(id));
+  document.getElementById('registerSuccess').classList.remove('show');
+
+  if (!firstName) { showErr('regFirstNameErr'); setInputErr('regFirstName'); valid = false; }
+
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    showErr('regEmailErr', 'Masukkan email instansi yang valid.'); setInputErr('regEmail'); valid = false;
+  }
+  if (!unit) { showErr('regUnitErr', 'Pilih instansi Anda.'); setInputErr('regUnit'); valid = false; }
+
+  const pwOk = pw.length >= 8 && /[A-Z]/.test(pw) && /[0-9]/.test(pw);
+  if (!pwOk) { showErr('regPwErr'); setInputErr('regPw'); valid = false; }
+  if (pw !== pwConfirm) { showErr('regPwConfirmErr', 'Kata sandi tidak cocok.'); setInputErr('regPwConfirm'); valid = false; }
+  if (!terms) { showErr('regTermsErr', 'Anda harus menyetujui syarat & ketentuan.'); valid = false; }
+
+  if (!valid) return;
+
+  setBtnLoading('registerBtn', true);
+  setTimeout(() => {
+    setBtnLoading('registerBtn', false);
+    document.getElementById('registerSuccess').classList.add('show');
+    document.getElementById('registerInfo').classList.remove('show');
+  }, 1400);
+}
+
+/* ══════════════════════════════════════════
+   ENTER KEY SUPPORT
+══════════════════════════════════════════ */
+document.addEventListener('keydown', function(e) {
+  if (e.key !== 'Enter') return;
+  const active = document.querySelector('.form-view.active');
+  if (!active) return;
+  if (active.id === 'view-login') handleLogin();
+  else if (active.id === 'view-forgot') handleForgot();
+  else if (active.id === 'view-register') handleRegister();
+});
+</script>
+</body>
+</html>
